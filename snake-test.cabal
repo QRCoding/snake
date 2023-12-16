@@ -81,6 +81,8 @@ executable snake-test
                     , random
                     , transformers
                     , extra
+                    , vty
+                    , vty-unix
     -- Directories containing source files.
     hs-source-dirs:   app
 

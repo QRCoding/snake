@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell, FlexibleContexts #-}
 {-# LANGUAGE LambdaCase #-}
-module Snake where
+module Snake (initGame, Game, step, turn, Direction (..)) where
 
 import Control.Lens hiding ((<|), (|>), (:>), (:<))
 import Linear.V2 (V2(..), _x, _y)
