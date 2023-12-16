@@ -2,7 +2,7 @@
 module UI where
 
 import Control.Monad (void, forever)
-import Control.Monad.IO.Class ()
+import Control.Monad.IO.Class (liftIO)
 import Control.Concurrent (forkIO, threadDelay)
 import Data.Maybe ()
 
@@ -10,6 +10,7 @@ import Snake
 
 import Brick (neverShowCursor, App (..), Widget, BrickEvent (..), EventM, AttrMap, customMain)
 import Brick.BChan (newBChan, writeBChan)
+import Brick.Types (modify, put)
 import qualified Brick.Widgets.Border as B
 import qualified Brick.Widgets.Border.Style as BS
 import qualified Brick.Widgets.Center as C
@@ -19,6 +20,7 @@ import Data.Sequence ()
 import qualified Data.Sequence as S
 import Linear.V2 ()
 import Lens.Micro ()
+import Brick.Main (halt)
 
 -- Types
 
@@ -37,7 +39,7 @@ app = App { appDraw = drawUI
           }
 
 theMap :: AttrMap
-theMap = undefined 
+theMap = undefined
 
 drawUI :: Game -> [Widget Name]
 drawUI = undefined
@@ -54,17 +56,16 @@ main = do
     void $ customMain initialVty builder (Just chan) app g
 
 handleEvent :: BrickEvent Name Tick -> EventM Name Game ()
-handleEvent (AppEvent Tick)                            = modify step
--- handleEvent g (VtyEvent (V.EvKey V.KUp []))         = turn North g
--- handleEvent g (VtyEvent (V.EvKey V.KDown []))       = turn South g
--- handleEvent g (VtyEvent (V.EvKey V.KRight []))      = continue $ turn East g
--- handleEvent g (VtyEvent (V.EvKey V.KLeft []))       = continue $ turn West g
--- handleEvent g (VtyEvent (V.EvKey (V.KChar 'k') [])) = continue $ turn North g
--- handleEvent g (VtyEvent (V.EvKey (V.KChar 'j') [])) = continue $ turn South g
--- handleEvent g (VtyEvent (V.EvKey (V.KChar 'l') [])) = continue $ turn East g
--- handleEvent g (VtyEvent (V.EvKey (V.KChar 'h') [])) = continue $ turn West g
--- handleEvent g (VtyEvent (V.EvKey (V.KChar 'r') [])) = liftIO (initGame) >>= continue
--- handleEvent g (VtyEvent (V.EvKey (V.KChar 'q') [])) = halt g
--- handleEvent g (VtyEvent (V.EvKey V.KEsc []))        = halt g
--- handleEvent g _                                     = continue g
-
+handleEvent (AppEvent Tick)                       = modify step
+handleEvent (VtyEvent (V.EvKey V.KUp []))         = modify $ turn North
+handleEvent (VtyEvent (V.EvKey V.KDown []))       = modify $ turn South
+handleEvent (VtyEvent (V.EvKey V.KRight []))      = modify $ turn East
+handleEvent (VtyEvent (V.EvKey V.KLeft []))       = modify $ turn West
+handleEvent (VtyEvent (V.EvKey (V.KChar 'k') [])) = modify $ turn North
+handleEvent (VtyEvent (V.EvKey (V.KChar 'j') [])) = modify $ turn South
+handleEvent (VtyEvent (V.EvKey (V.KChar 'l') [])) = modify $ turn East
+handleEvent (VtyEvent (V.EvKey (V.KChar 'h') [])) = modify $ turn West
+handleEvent (VtyEvent (V.EvKey (V.KChar 'r') [])) = void   $ liftIO initGame
+handleEvent (VtyEvent (V.EvKey (V.KChar 'q') [])) = halt
+handleEvent (VtyEvent (V.EvKey V.KEsc []))        = halt
+handleEvent _                                     = return ()
