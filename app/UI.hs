@@ -9,6 +9,7 @@ import Data.Maybe ()
 import Snake
 
 import Brick (neverShowCursor, App (..), Widget, BrickEvent (..), EventM, AttrMap, customMain)
+import Brick.Types (modify)
 import Brick.BChan (newBChan, writeBChan)
 import qualified Brick.Widgets.Border as B
 import qualified Brick.Widgets.Border.Style as BS
